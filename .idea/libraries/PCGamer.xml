@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="PCGamer">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$" />
+      <root url="jar://$USER_HOME$/Downloads/mysql-connector-j-9.7.0/mysql-connector-j-9.7.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/src" />
+    </SOURCES>
+  </library>
+</component>
