@@ -5,11 +5,19 @@ import java.sql.SQLException;
 public class ConnectionFactory {
 
     private static final String URL =
-            "jdbc:mysql://localhost:3307/pcbuilder";
+            "jdbc:mysql://localhost:3307/pcbuilder?useSSL=false&serverTimezone=UTC";
 
     private static final String USER = "root";
 
     private static final String PASSWORD = "senacrs";
+
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL JDBC Driver not found on classpath", e);
+        }
+    }
 
     public static Connection getConexao(){
         try {
@@ -19,7 +27,7 @@ public class ConnectionFactory {
                     PASSWORD
             );
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao conectar: " + e.getMessage());
+            throw new RuntimeException("Erro ao conectar: " + e.getMessage(), e);
         }
     }
 }

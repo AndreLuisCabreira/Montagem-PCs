@@ -50,6 +50,29 @@ public class Main {
 
     }
 
+    public static double lerDouble(String mensagem) {
+
+        while (true) {
+
+            System.out.print(mensagem);
+
+            if (sc.hasNextDouble()) {
+
+                double numero = sc.nextDouble();
+                sc.nextLine();
+                return numero;
+
+            } else {
+
+                System.out.println("Erro! Digite apenas números válidos.");
+                sc.nextLine();
+
+            }
+
+        }
+
+    }
+
     public static void main(String[] args) {
 
         int opcao;
@@ -212,10 +235,7 @@ public class Main {
         System.out.print("Nome: ");
         p.setNome(sc.nextLine());
 
-        System.out.print("Preço: ");
-        p.setPreco(sc.nextDouble());
-
-        sc.nextLine();
+        p.setPreco(lerDouble("Preço: "));
 
         System.out.print("Fabricante: ");
         p.setFabricante(sc.nextLine());
@@ -223,17 +243,13 @@ public class Main {
         System.out.print("Socket: ");
         p.setSocket(sc.nextLine());
 
-        System.out.print("Núcleos: ");
-        p.setNucleos(sc.nextInt());
+        p.setNucleos(lerInteiro("Núcleos: "));
 
-        System.out.print("Threads: ");
-        p.setThreads(sc.nextInt());
+        p.setThreads(lerInteiro("Threads: "));
 
-        System.out.print("Consumo: ");
-        p.setConsumo(sc.nextInt());
+        p.setConsumo(lerInteiro("Consumo: "));
 
-        System.out.print("Desempenho: ");
-        p.setDesempenho(sc.nextDouble());
+        p.setDesempenho(lerDouble("Desempenho: "));
 
         processadorDAO.inserir(p);
 
@@ -247,9 +263,7 @@ public class Main {
         System.out.print("Nome: ");
         placaMae.setNome(sc.nextLine());
 
-        System.out.print("Preço: ");
-        placaMae.setPreco(sc.nextDouble());
-        sc.nextLine();
+        placaMae.setPreco(lerDouble("Preço: "));
 
         System.out.print("Fabricante: ");
         placaMae.setFabricante(sc.nextLine());
@@ -260,9 +274,7 @@ public class Main {
         System.out.print("Tipo de Memória (DDR4 ou DDR5): ");
         placaMae.setTipoMemoria(sc.nextLine());
 
-        System.out.print("Consumo (W): ");
-        placaMae.setConsumo(sc.nextInt());
-        sc.nextLine();
+        placaMae.setConsumo(lerInteiro("Consumo (W): "));
 
         placaMaeDAO.inserir(placaMae);
 
@@ -276,22 +288,16 @@ public class Main {
         System.out.print("Nome: ");
         placaVideo.setNome(sc.nextLine());
 
-        System.out.print("Preço: ");
-        placaVideo.setPreco(sc.nextDouble());
-        sc.nextLine();
+        placaVideo.setPreco(lerDouble("Preço: "));
 
         System.out.print("Fabricante: ");
         placaVideo.setFabricante(sc.nextLine());
 
-        System.out.print("Memória de Vídeo (GB): ");
-        placaVideo.setMemoria(sc.nextInt());
+        placaVideo.setMemoria(lerInteiro("Memória de Vídeo (GB): "));
 
-        System.out.print("Consumo (W): ");
-        placaVideo.setConsumo(sc.nextInt());
+        placaVideo.setConsumo(lerInteiro("Consumo (W): "));
 
-        System.out.print("Desempenho: ");
-        placaVideo.setDesempenho(sc.nextInt());
-        sc.nextLine();
+        placaVideo.setDesempenho(lerInteiro("Desempenho: "));
 
         placaVideoDAO.inserir(placaVideo);
 
@@ -305,16 +311,11 @@ public class Main {
         System.out.print("Nome: ");
         memoria.setNome(sc.nextLine());
 
-        System.out.print("Preço: ");
-        memoria.setPreco(sc.nextDouble());
-        sc.nextLine();
+        memoria.setPreco(lerDouble("Preço: "));
 
-        System.out.print("Capacidade (GB): ");
-        memoria.setCapacidade(sc.nextInt());
+        memoria.setCapacidade(lerInteiro("Capacidade (GB): "));
 
-        System.out.print("Frequência (MHz): ");
-        memoria.setFrequencia(sc.nextInt());
-        sc.nextLine();
+        memoria.setFrequencia(lerInteiro("Frequência (MHz): "));
 
         System.out.print("Tipo (DDR4 ou DDR5): ");
         memoria.setTipo(sc.nextLine());
@@ -331,26 +332,20 @@ public class Main {
         System.out.print("Nome: ");
         ssd.setNome(sc.nextLine());
 
-        System.out.print("Preço: ");
-        ssd.setPreco(sc.nextDouble());
-        sc.nextLine();
+        ssd.setPreco(lerDouble("Preço: "));
 
-        System.out.print("Capacidade (GB): ");
-        ssd.setCapacidade(sc.nextInt());
+        ssd.setCapacidade(lerInteiro("Capacidade (GB): "));
 
-        System.out.print("Velocidade de Leitura (MB/s): ");
-        ssd.setLeitura(sc.nextInt());
+        ssd.setLeitura(lerInteiro("Velocidade de Leitura (MB/s): "));
 
-        System.out.print("Velocidade de Escrita (MB/s): ");
-        ssd.setEscrita(sc.nextInt());
-        sc.nextLine();
+        ssd.setEscrita(lerInteiro("Velocidade de Escrita (MB/s): "));
 
         System.out.print("Tipo (SATA ou NVMe): ");
         ssd.setTipo(sc.nextLine());
 
         ssdDAO.inserir(ssd);
 
-        System.out.println("\nSSD cadastrado com sucesso!");
+        System.out.println("\nSSD cadastrada com sucesso!");
     }
 
     public static void cadastrarFonte() {
@@ -360,13 +355,9 @@ public class Main {
         System.out.print("Nome: ");
         fonte.setNome(sc.nextLine());
 
-        System.out.print("Preço: ");
-        fonte.setPreco(sc.nextDouble());
-        sc.nextLine();
+        fonte.setPreco(lerDouble("Preço: "));
 
-        System.out.print("Potência (W): ");
-        fonte.setPotencia(sc.nextInt());
-        sc.nextLine();
+        fonte.setPotencia(lerInteiro("Potência (W): "));
 
         System.out.print("Certificação (80 Plus White, Bronze, Gold...): ");
         fonte.setCertificacao(sc.nextLine());

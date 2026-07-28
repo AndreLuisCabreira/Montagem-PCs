@@ -1,6 +1,4 @@
 import model.PlacaVideo;
-import model.Processador;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
