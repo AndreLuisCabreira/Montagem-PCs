@@ -32,17 +32,27 @@ public class Main {
         while (true) {
 
             System.out.print(mensagem);
+            String entrada = sc.nextLine().trim();
 
-            if (sc.hasNextInt()) {
+            if (entrada.isEmpty()) {
+                System.out.println("Erro! O campo não pode ficar vazio.");
+                continue;
+            }
 
-                int numero = sc.nextInt();
-                sc.nextLine();
+            if (entrada.matches("\\d+")) {
+
+                int numero = Integer.parseInt(entrada);
+
+                if (numero < 0) {
+                    System.out.println("Erro! O número não pode ser negativo.");
+                    continue;
+                }
+
                 return numero;
 
             } else {
 
                 System.out.println("Erro! Digite apenas números inteiros.");
-                sc.nextLine();
 
             }
 
@@ -55,18 +65,24 @@ public class Main {
         while (true) {
 
             System.out.print(mensagem);
+            String entrada = sc.nextLine().trim();
 
-            if (sc.hasNextDouble()) {
+            if (entrada.isEmpty()) {
+                System.out.println("Erro! O campo não pode ficar vazio.");
+                continue;
+            }
 
-                double numero = sc.nextDouble();
-                sc.nextLine();
+            try {
+                double numero = Double.parseDouble(entrada);
+
+                if (numero < 0) {
+                    System.out.println("Erro! O número não pode ser negativo.");
+                    continue;
+                }
+
                 return numero;
-
-            } else {
-
+            } catch (NumberFormatException e) {
                 System.out.println("Erro! Digite apenas números válidos.");
-                sc.nextLine();
-
             }
 
         }
@@ -92,12 +108,14 @@ public class Main {
             System.out.println("10 - FPS");
             System.out.println("0 - Sair");
 
-            System.out.print("Escolha: ");
+            opcao = lerInteiro("Escolha: ");
 
-            opcao = sc.nextInt();
-            sc.nextLine();
+            if (opcao < 0 || opcao > 10) {
+                System.out.println("Opção inválida! Digite um número entre 0 e 10.");
+                continue;
+            }
 
-            switch (opcao){
+            switch (opcao) {
 
                 case 1:
                     cadastrarUsuario();
@@ -141,7 +159,7 @@ public class Main {
 
             }
 
-        }while(opcao != 0);
+        } while (opcao != 0);
 
     }
 
@@ -151,14 +169,35 @@ public class Main {
 
         System.out.println("\n===== CADASTRO DE USUÁRIO =====");
 
-        System.out.print("Nome: ");
-        usuario.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        usuario.setNome(nome);
 
-        System.out.print("Login: ");
-        usuario.setLogin(sc.nextLine());
+        String login;
+        do {
+            System.out.print("Login: ");
+            login = sc.nextLine().trim();
+            if (login.isEmpty()) {
+                System.out.println("Erro! O login não pode ficar vazio.");
+            }
+        } while (login.isEmpty());
+        usuario.setLogin(login);
 
-        System.out.print("Senha: ");
-        usuario.setSenha(sc.nextLine());
+        String senha;
+        do {
+            System.out.print("Senha: ");
+            senha = sc.nextLine().trim();
+            if (senha.isEmpty()) {
+                System.out.println("Erro! A senha não pode ficar vazia.");
+            }
+        } while (senha.isEmpty());
+        usuario.setSenha(senha);
 
         usuarioDAO.inserir(usuario);
 
@@ -232,16 +271,37 @@ public class Main {
 
         Processador p = new Processador();
 
-        System.out.print("Nome: ");
-        p.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        p.setNome(nome);
 
         p.setPreco(lerDouble("Preço: "));
 
-        System.out.print("Fabricante: ");
-        p.setFabricante(sc.nextLine());
+        String fabricante;
+        do {
+            System.out.print("Fabricante: ");
+            fabricante = sc.nextLine().trim();
+            if (fabricante.isEmpty()) {
+                System.out.println("Erro! O fabricante não pode ficar vazio.");
+            }
+        } while (fabricante.isEmpty());
+        p.setFabricante(fabricante);
 
-        System.out.print("Socket: ");
-        p.setSocket(sc.nextLine());
+        String socket;
+        do {
+            System.out.print("Socket: ");
+            socket = sc.nextLine().trim();
+            if (socket.isEmpty()) {
+                System.out.println("Erro! O socket não pode ficar vazio.");
+            }
+        } while (socket.isEmpty());
+        p.setSocket(socket);
 
         p.setNucleos(lerInteiro("Núcleos: "));
 
@@ -260,19 +320,47 @@ public class Main {
 
         PlacaMae placaMae = new PlacaMae();
 
-        System.out.print("Nome: ");
-        placaMae.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        placaMae.setNome(nome);
 
         placaMae.setPreco(lerDouble("Preço: "));
 
-        System.out.print("Fabricante: ");
-        placaMae.setFabricante(sc.nextLine());
+        String fabricante;
+        do {
+            System.out.print("Fabricante: ");
+            fabricante = sc.nextLine().trim();
+            if (fabricante.isEmpty()) {
+                System.out.println("Erro! O fabricante não pode ficar vazio.");
+            }
+        } while (fabricante.isEmpty());
+        placaMae.setFabricante(fabricante);
 
-        System.out.print("Socket: ");
-        placaMae.setSocket(sc.nextLine());
+        String socket;
+        do {
+            System.out.print("Socket: ");
+            socket = sc.nextLine().trim();
+            if (socket.isEmpty()) {
+                System.out.println("Erro! O socket não pode ficar vazio.");
+            }
+        } while (socket.isEmpty());
+        placaMae.setSocket(socket);
 
-        System.out.print("Tipo de Memória (DDR4 ou DDR5): ");
-        placaMae.setTipoMemoria(sc.nextLine());
+        String tipoMemoria;
+        do {
+            System.out.print("Tipo de Memória (DDR4 ou DDR5): ");
+            tipoMemoria = sc.nextLine().trim();
+            if (tipoMemoria.isEmpty()) {
+                System.out.println("Erro! O tipo de memória não pode ficar vazio.");
+            }
+        } while (tipoMemoria.isEmpty());
+        placaMae.setTipoMemoria(tipoMemoria);
 
         placaMae.setConsumo(lerInteiro("Consumo (W): "));
 
@@ -285,13 +373,27 @@ public class Main {
 
         PlacaVideo placaVideo = new PlacaVideo();
 
-        System.out.print("Nome: ");
-        placaVideo.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        placaVideo.setNome(nome);
 
         placaVideo.setPreco(lerDouble("Preço: "));
 
-        System.out.print("Fabricante: ");
-        placaVideo.setFabricante(sc.nextLine());
+        String fabricante;
+        do {
+            System.out.print("Fabricante: ");
+            fabricante = sc.nextLine().trim();
+            if (fabricante.isEmpty()) {
+                System.out.println("Erro! O fabricante não pode ficar vazio.");
+            }
+        } while (fabricante.isEmpty());
+        placaVideo.setFabricante(fabricante);
 
         placaVideo.setMemoria(lerInteiro("Memória de Vídeo (GB): "));
 
@@ -308,8 +410,15 @@ public class Main {
 
         Memoria memoria = new Memoria();
 
-        System.out.print("Nome: ");
-        memoria.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        memoria.setNome(nome);
 
         memoria.setPreco(lerDouble("Preço: "));
 
@@ -317,8 +426,15 @@ public class Main {
 
         memoria.setFrequencia(lerInteiro("Frequência (MHz): "));
 
-        System.out.print("Tipo (DDR4 ou DDR5): ");
-        memoria.setTipo(sc.nextLine());
+        String tipo;
+        do {
+            System.out.print("Tipo (DDR4 ou DDR5): ");
+            tipo = sc.nextLine().trim();
+            if (tipo.isEmpty()) {
+                System.out.println("Erro! O tipo não pode ficar vazio.");
+            }
+        } while (tipo.isEmpty());
+        memoria.setTipo(tipo);
 
         memoriaDAO.inserir(memoria);
 
@@ -329,8 +445,15 @@ public class Main {
 
         SSD ssd = new SSD();
 
-        System.out.print("Nome: ");
-        ssd.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        ssd.setNome(nome);
 
         ssd.setPreco(lerDouble("Preço: "));
 
@@ -340,8 +463,15 @@ public class Main {
 
         ssd.setEscrita(lerInteiro("Velocidade de Escrita (MB/s): "));
 
-        System.out.print("Tipo (SATA ou NVMe): ");
-        ssd.setTipo(sc.nextLine());
+        String tipo;
+        do {
+            System.out.print("Tipo (SATA ou NVMe): ");
+            tipo = sc.nextLine().trim();
+            if (tipo.isEmpty()) {
+                System.out.println("Erro! O tipo não pode ficar vazio.");
+            }
+        } while (tipo.isEmpty());
+        ssd.setTipo(tipo);
 
         ssdDAO.inserir(ssd);
 
@@ -352,15 +482,29 @@ public class Main {
 
         Fonte fonte = new Fonte();
 
-        System.out.print("Nome: ");
-        fonte.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Nome: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        fonte.setNome(nome);
 
         fonte.setPreco(lerDouble("Preço: "));
 
         fonte.setPotencia(lerInteiro("Potência (W): "));
 
-        System.out.print("Certificação (80 Plus White, Bronze, Gold...): ");
-        fonte.setCertificacao(sc.nextLine());
+        String certificacao;
+        do {
+            System.out.print("Certificação (80 Plus White, Bronze, Gold...): ");
+            certificacao = sc.nextLine().trim();
+            if (certificacao.isEmpty()) {
+                System.out.println("Erro! A certificação não pode ficar vazia.");
+            }
+        } while (certificacao.isEmpty());
+        fonte.setCertificacao(certificacao);
 
         fonteDAO.inserir(fonte);
 
@@ -631,9 +775,7 @@ public class Main {
 
         System.out.println("\n========== BUSCAR BUILD ==========");
 
-        System.out.print("Digite o ID da Build: ");
-        int id = sc.nextInt();
-        sc.nextLine();
+        int id = lerInteiro("Digite o ID da Build: ");
 
         Build build = buildDAO.buscarPorId(id);
 
@@ -673,9 +815,7 @@ public class Main {
 
         System.out.println("\n========== ATUALIZAR BUILD ==========");
 
-        System.out.print("Digite o ID da Build: ");
-        int id = sc.nextInt();
-        sc.nextLine();
+        int id = lerInteiro("Digite o ID da Build: ");
 
         Build build = buildDAO.buscarPorId(id);
 
@@ -684,103 +824,177 @@ public class Main {
             return;
         }
 
-        System.out.print("Novo nome da Build: ");
-        build.setNome(sc.nextLine());
+        String nome;
+        do {
+            System.out.print("Novo nome da Build: ");
+            nome = sc.nextLine().trim();
+            if (nome.isEmpty()) {
+                System.out.println("Erro! O nome da build não pode ficar vazio.");
+            }
+        } while (nome.isEmpty());
+        build.setNome(nome);
 
-        System.out.println("\nUSUÁRIOS DISPONÍVEIS");
+        while (true) {
+            System.out.println("\nUSUÁRIOS DISPONÍVEIS");
 
-        for (Usuario u : usuarioDAO.listar()) {
-            System.out.println(u);
+            for (Usuario u : usuarioDAO.listar()) {
+                System.out.println(u);
+            }
+
+            int idUsuario = lerInteiro("ID do Usuário: ");
+            if (usuarioDAO.buscarPorId(idUsuario) != null) {
+                build.setUsuarioId(idUsuario);
+                break;
+            }
+
+            System.out.println("Erro! Esse usuário não existe. Escolha um ID da lista.");
         }
-
-        System.out.print("ID do Usuário: ");
-        build.setUsuarioId(sc.nextInt());
 
         // ==========================
         // PROCESSADOR
         // ==========================
 
-        System.out.println("\nPROCESSADORES DISPONÍVEIS");
+        while (true) {
+            System.out.println("\nPROCESSADORES DISPONÍVEIS");
 
-        for (Processador p : processadorDAO.listar()) {
-            System.out.println(p);
+            for (Processador p : processadorDAO.listar()) {
+                System.out.println(p);
+            }
+
+            int idProcessador = lerInteiro("ID do Processador: ");
+            Processador processadorSelecionado = processadorDAO.buscarPorId(idProcessador);
+            if (processadorSelecionado != null) {
+                build.setProcessador(processadorSelecionado);
+                break;
+            }
+
+            System.out.println("Erro! Esse processador não existe. Escolha um ID da lista.");
         }
-
-        System.out.print("ID do Processador: ");
-        build.setProcessador(processadorDAO.buscarPorId(sc.nextInt()));
 
         // ==========================
         // PLACA MÃE
         // ==========================
 
-        System.out.println("\nPLACAS-MÃE DISPONÍVEIS");
+        while (true) {
+            System.out.println("\nPLACAS-MÃE DISPONÍVEIS");
 
-        for (PlacaMae pm : placaMaeDAO.listar()) {
-            System.out.println(pm);
+            for (PlacaMae pm : placaMaeDAO.listar()) {
+                System.out.println(pm);
+            }
+
+            int idPlacaMae = lerInteiro("ID da Placa-Mãe: ");
+            PlacaMae placaMaeSelecionada = placaMaeDAO.buscarPorId(idPlacaMae);
+            if (placaMaeSelecionada == null) {
+                System.out.println("Erro! Essa placa-mãe não existe. Escolha um ID da lista.");
+                continue;
+            }
+
+            if (!placaMaeSelecionada.getSocket().equalsIgnoreCase(build.getProcessador().getSocket())) {
+                System.out.println("Erro! Essa placa-mãe não é compatível com o processador selecionado.");
+                continue;
+            }
+
+            build.setPlacaMae(placaMaeSelecionada);
+            break;
         }
-
-        System.out.print("ID da Placa-Mãe: ");
-        build.setPlacaMae(placaMaeDAO.buscarPorId(sc.nextInt()));
 
         // ==========================
         // PLACA DE VÍDEO
         // ==========================
 
-        System.out.println("\nPLACAS DE VÍDEO DISPONÍVEIS");
+        while (true) {
+            System.out.println("\nPLACAS DE VÍDEO DISPONÍVEIS");
 
-        for (PlacaVideo pv : placaVideoDAO.listar()) {
-            System.out.println(pv);
+            for (PlacaVideo pv : placaVideoDAO.listar()) {
+                System.out.println(pv);
+            }
+
+            int idPlacaVideo = lerInteiro("ID da Placa de Vídeo: ");
+            PlacaVideo placaVideoSelecionada = placaVideoDAO.buscarPorId(idPlacaVideo);
+            if (placaVideoSelecionada != null) {
+                build.setPlacaVideo(placaVideoSelecionada);
+                break;
+            }
+
+            System.out.println("Erro! Essa placa de vídeo não existe. Escolha um ID da lista.");
         }
-
-        System.out.print("ID da Placa de Vídeo: ");
-        build.setPlacaVideo(placaVideoDAO.buscarPorId(sc.nextInt()));
 
         // ==========================
         // MEMÓRIA
         // ==========================
 
-        System.out.println("\nMEMÓRIAS DISPONÍVEIS");
+        while (true) {
+            System.out.println("\nMEMÓRIAS DISPONÍVEIS");
 
-        for (Memoria m : memoriaDAO.listar()) {
-            System.out.println(m);
+            for (Memoria m : memoriaDAO.listar()) {
+                System.out.println(m);
+            }
+
+            int idMemoria = lerInteiro("ID da Memória: ");
+            Memoria memoriaSelecionada = memoriaDAO.buscarPorId(idMemoria);
+            if (memoriaSelecionada != null) {
+                build.setMemoria(memoriaSelecionada);
+                break;
+            }
+
+            System.out.println("Erro! Essa memória não existe. Escolha um ID da lista.");
         }
-
-        System.out.print("ID da Memória: ");
-        build.setMemoria(memoriaDAO.buscarPorId(sc.nextInt()));
 
         // ==========================
         // SSD
         // ==========================
 
-        System.out.println("\nSSDs DISPONÍVEIS");
+        while (true) {
+            System.out.println("\nSSDs DISPONÍVEIS");
 
-        for (SSD s : ssdDAO.listar()) {
-            System.out.println(s);
+            for (SSD s : ssdDAO.listar()) {
+                System.out.println(s);
+            }
+
+            int idSsd = lerInteiro("ID do SSD: ");
+            SSD ssdSelecionado = ssdDAO.buscarPorId(idSsd);
+            if (ssdSelecionado != null) {
+                build.setSsd(ssdSelecionado);
+                break;
+            }
+
+            System.out.println("Erro! Esse SSD não existe. Escolha um ID da lista.");
         }
-
-        System.out.print("ID do SSD: ");
-        build.setSsd(ssdDAO.buscarPorId(sc.nextInt()));
 
         // ==========================
         // FONTE
         // ==========================
 
-        System.out.println("\nFONTES DISPONÍVEIS");
+        while (true) {
+            System.out.println("\nFONTES DISPONÍVEIS");
 
-        for (Fonte f : fonteDAO.listar()) {
-            System.out.println(f);
+            for (Fonte f : fonteDAO.listar()) {
+                System.out.println(f);
+            }
+
+            int idFonte = lerInteiro("ID da Fonte: ");
+            Fonte fonteSelecionada = fonteDAO.buscarPorId(idFonte);
+            if (fonteSelecionada != null) {
+                build.setFonte(fonteSelecionada);
+                break;
+            }
+
+            System.out.println("Erro! Essa fonte não existe. Escolha um ID da lista.");
         }
-
-        System.out.print("ID da Fonte: ");
-        build.setFonte(fonteDAO.buscarPorId(sc.nextInt()));
 
         // ==========================
         // FAVORITA
         // ==========================
 
-        System.out.print("Favorita (true/false): ");
-        build.setFavorita(sc.nextBoolean());
-        sc.nextLine();
+        String favorita;
+        do {
+            System.out.print("Favorita (true/false): ");
+            favorita = sc.nextLine().trim();
+            if (!favorita.equalsIgnoreCase("true") && !favorita.equalsIgnoreCase("false")) {
+                System.out.println("Erro! Digite apenas true ou false.");
+            }
+        } while (!favorita.equalsIgnoreCase("true") && !favorita.equalsIgnoreCase("false"));
+        build.setFavorita(Boolean.parseBoolean(favorita));
 
         buildDAO.atualizar(build);
 
@@ -791,9 +1005,7 @@ public class Main {
 
         System.out.println("\n========== EXCLUIR BUILD ==========");
 
-        System.out.print("Digite o ID da Build: ");
-        int id = sc.nextInt();
-        sc.nextLine();
+        int id = lerInteiro("Digite o ID da Build: ");
 
         Build build = buildDAO.buscarPorId(id);
 
@@ -827,9 +1039,7 @@ public class Main {
 
         System.out.println("\n========== TESTAR COMPATIBILIDADE ==========");
 
-        System.out.print("Digite o ID da Build: ");
-        int id = sc.nextInt();
-        sc.nextLine();
+        int id = lerInteiro("Digite o ID da Build: ");
 
         Build build = buildDAO.buscarPorId(id);
 
