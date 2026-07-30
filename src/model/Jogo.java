@@ -22,6 +22,7 @@ public class Jogo {
         this.exigenciaGpu = exigenciaGpu;
     }
 
+
     public int getId() {
         return id;
     }

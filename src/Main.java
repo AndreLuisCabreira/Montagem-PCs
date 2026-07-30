@@ -4,6 +4,7 @@ import service.ConsumoService;
 import service.FPSService;
 
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public class Main {
 
@@ -17,6 +18,7 @@ public class Main {
     static SSDDAO ssdDAO = new SSDDAO();
     static FonteDAO fonteDAO = new FonteDAO();
     static BuildDAO buildDAO = new BuildDAO();
+    static JogoDAO jogoDAO = new JogoDAO();
 
     static CompatibilidadeService compatibilidadeService =
             new CompatibilidadeService();
@@ -87,6 +89,18 @@ public class Main {
 
         }
 
+    }
+
+    public static int lerIdExistente(String mensagem, Predicate<Integer> validador) {
+        while (true) {
+            int id = lerInteiro(mensagem);
+
+            if (validador.test(id)) {
+                return id;
+            }
+
+            System.out.println("ID inválido! Digite um ID que exista.");
+        }
     }
 
     public static void main(String[] args) {
@@ -170,13 +184,22 @@ public class Main {
         System.out.println("\n===== CADASTRO DE USUÁRIO =====");
 
         String nome;
-        do {
+        while (true) {
             System.out.print("Nome: ");
             nome = sc.nextLine().trim();
+
             if (nome.isEmpty()) {
                 System.out.println("Erro! O nome não pode ficar vazio.");
+                continue;
             }
-        } while (nome.isEmpty());
+
+            if (!nome.matches("[a-zA-ZÀ-ÿ\s]+")) {
+                System.out.println("Erro! O nome deve conter apenas letras.");
+                continue;
+            }
+
+            break;
+        }
         usuario.setNome(nome);
 
         String login;
@@ -220,9 +243,12 @@ public class Main {
             System.out.println("6 - Fonte");
             System.out.println("0 - Voltar");
 
-            op = sc.nextInt();
+            op = lerInteiro("Escolha uma opção: ");
 
-            sc.nextLine();
+            if (op < 0 || op > 6) {
+                System.out.println("Opção inválida! Digite apenas números entre 0 e 6.");
+                continue;
+            }
 
             switch(op){
 
@@ -524,7 +550,7 @@ public class Main {
 
         while (true) {
 
-            int idUsuario = lerInteiro("Digite o ID do Usuário: ");
+            int idUsuario = lerIdExistente("Digite o ID do Usuário: ", id -> usuarioDAO.buscarPorId(id) != null);
 
             usuario = usuarioDAO.buscarPorId(idUsuario);
 
@@ -539,65 +565,70 @@ public class Main {
         }
 
         // ==========================
-        // PROCESSADOR
-        // ==========================
-
-        System.out.println("\nPROCESSADORES DISPONÍVEIS");
-
-        for (Processador p : processadorDAO.listar()) {
-            System.out.println(p);
-        }
-
-        while (true) {
-
-            int id = lerInteiro("Escolha o ID do Processador: ");
-
-            Processador processador = processadorDAO.buscarPorId(id);
-
-            if (processador != null) {
-
-                build.setProcessador(processador);
-                break;
-
-            }
-
-            System.out.println("Processador não encontrado!");
-        }
-
-        // ==========================
         // PLACA MÃE
         // ==========================
 
-        System.out.println("\nPLACAS-MÃE COMPATÍVEIS");
+        System.out.println("\nPLACAS-MÃE DISPONÍVEIS");
 
         for (PlacaMae pm : placaMaeDAO.listar()) {
-
-            if (pm.getSocket().equalsIgnoreCase(build.getProcessador().getSocket())) {
-                System.out.println(pm);
-            }
-
+            System.out.println(pm);
         }
 
         PlacaMae placaMae;
 
         while (true) {
 
-            int idPlacaMae = lerInteiro("Escolha o ID da Placa-Mãe: ");
+            int idPlacaMae = lerIdExistente("Escolha o ID da Placa-Mãe: ", placaMaeId -> placaMaeDAO.buscarPorId(placaMaeId) != null);
 
             placaMae = placaMaeDAO.buscarPorId(idPlacaMae);
 
             if (placaMae == null) {
-                System.out.println("Placa-Mãe não encontrada!");
-                continue;
-            }
-
-            if (!placaMae.getSocket().equalsIgnoreCase(build.getProcessador().getSocket())) {
-                System.out.println("Esta placa-mãe não é compatível com o processador escolhido!");
+                System.out.println("Placa-Mãe não encontrada! Digite um ID válido.");
                 continue;
             }
 
             build.setPlacaMae(placaMae);
             break;
+        }
+
+        // ==========================
+        // PROCESSADOR
+        // ==========================
+
+        System.out.println("\nPROCESSADORES COMPATÍVEIS COM O SOCKET " + placaMae.getSocket());
+
+        boolean processadorCompativelEncontrado = false;
+
+        for (Processador p : processadorDAO.listar()) {
+            if (p.getSocket().equalsIgnoreCase(placaMae.getSocket())) {
+                System.out.println(p);
+                processadorCompativelEncontrado = true;
+            }
+        }
+
+        if (!processadorCompativelEncontrado) {
+            System.out.println("Nenhum processador compatível com este socket foi encontrado.");
+        }
+
+        while (true) {
+
+            int id = lerIdExistente("Escolha o ID do Processador: ", processadorId -> processadorDAO.buscarPorId(processadorId) != null);
+
+            Processador processador = processadorDAO.buscarPorId(id);
+
+            if (processador != null) {
+
+                if (!processador.getSocket().equalsIgnoreCase(placaMae.getSocket())) {
+                    System.out.println("Este processador não é compatível com o socket da placa-mãe escolhida!");
+                    continue;
+                }
+
+                build.setProcessador(processador);
+                break;
+
+            }
+
+            System.out.println("Processador não encontrado! Digite um ID válido.");
         }
 
         // ==========================
@@ -614,7 +645,7 @@ public class Main {
 
         while (true) {
 
-            int idPlacaVideo = lerInteiro("Escolha o ID da Placa de Vídeo: ");
+            int idPlacaVideo = lerIdExistente("Escolha o ID da Placa de Vídeo: ", placaVideoId -> placaVideoDAO.buscarPorId(placaVideoId) != null);
 
             placaVideo = placaVideoDAO.buscarPorId(idPlacaVideo);
 
@@ -632,10 +663,21 @@ public class Main {
         // MEMÓRIA
         // ==========================
 
-        System.out.println("\nMEMÓRIAS DISPONÍVEIS");
+        String tipoMemoriaRequerido = build.getPlacaMae().getTipoMemoria();
+
+        System.out.println("\nMEMÓRIAS COMPATÍVEIS (" + tipoMemoriaRequerido + ")");
+
+        boolean memoriaCompativelEncontrada = false;
 
         for (Memoria m : memoriaDAO.listar()) {
-            System.out.println(m);
+            if (m.getTipo().equalsIgnoreCase(tipoMemoriaRequerido)) {
+                System.out.println(m);
+                memoriaCompativelEncontrada = true;
+            }
+        }
+
+        if (!memoriaCompativelEncontrada) {
+            System.out.println("Nenhuma memória compatível com o tipo " + tipoMemoriaRequerido + " foi encontrada.");
         }
 
         Memoria memoria;
@@ -646,14 +688,18 @@ public class Main {
 
             memoria = memoriaDAO.buscarPorId(idMemoria);
 
-            if (memoria != null) {
-
-                build.setMemoria(memoria);
-                break;
-
+            if (memoria == null) {
+                System.out.println("Memória não encontrada! Digite um ID válido.");
+                continue;
             }
 
-            System.out.println("Memória não encontrada! Digite um ID válido.");
+            if (!memoria.getTipo().equalsIgnoreCase(tipoMemoriaRequerido)) {
+                System.out.println("Esta memória não é compatível com o tipo da placa-mãe escolhida!");
+                continue;
+            }
+
+            build.setMemoria(memoria);
+            break;
         }
 
         // ==========================
@@ -670,7 +716,7 @@ public class Main {
 
         while (true) {
 
-            int idSSD = lerInteiro("Escolha o ID do SSD: ");
+            int idSSD = lerIdExistente("Escolha o ID do SSD: ", ssdId -> ssdDAO.buscarPorId(ssdId) != null);
 
             ssd = ssdDAO.buscarPorId(idSSD);
 
@@ -698,7 +744,7 @@ public class Main {
 
         while (true) {
 
-            int idFonte = lerInteiro("Escolha o ID da Fonte: ");
+            int idFonte = lerIdExistente("Escolha o ID da Fonte: ", fonteId -> fonteDAO.buscarPorId(fonteId) != null);
 
             fonte = fonteDAO.buscarPorId(idFonte);
 
@@ -716,10 +762,22 @@ public class Main {
         // FAVORITA
         // ==========================
 
-        System.out.print("\nA build é favorita? (true/false): ");
-        build.setFavorita(sc.nextBoolean());
+        while (true) {
+            System.out.print("\nA build é favorita? (true/false): ");
+            String favorita = sc.nextLine().trim();
 
-        sc.nextLine();
+            if (favorita.equalsIgnoreCase("true")) {
+                build.setFavorita(true);
+                break;
+            }
+
+            if (favorita.equalsIgnoreCase("false")) {
+                build.setFavorita(false);
+                break;
+            }
+
+            System.out.println("Erro! Digite apenas true ou false.");
+        }
 
         // ==========================
         // SALVAR
@@ -775,40 +833,43 @@ public class Main {
 
         System.out.println("\n========== BUSCAR BUILD ==========");
 
-        int id = lerInteiro("Digite o ID da Build: ");
+        while (true) {
+            int id = lerInteiro("Digite o ID da Build: ");
 
-        Build build = buildDAO.buscarPorId(id);
+            Build build = buildDAO.buscarPorId(id);
 
-        if (build == null) {
-            System.out.println("\nBuild não encontrada!");
-            return;
+            if (build == null) {
+                System.out.println("\nBuild não encontrada!");
+                continue;
+            }
+
+            System.out.println("\n========== BUILD ENCONTRADA ==========");
+            System.out.println("ID: " + build.getId());
+            System.out.println("Nome: " + build.getNome());
+            System.out.println("Usuário ID: " + build.getUsuarioId());
+
+            System.out.println("Processador: " +
+                    build.getProcessador().getNome());
+
+            System.out.println("Placa-Mãe: " +
+                    build.getPlacaMae().getNome());
+
+            System.out.println("Placa de Vídeo: " +
+                    build.getPlacaVideo().getNome());
+
+            System.out.println("Memória: " +
+                    build.getMemoria().getNome());
+
+            System.out.println("SSD: " +
+                    build.getSsd().getNome());
+
+            System.out.println("Fonte: " +
+                    build.getFonte().getNome());
+
+            System.out.println("Favorita: " +
+                    (build.isFavorita() ? "Sim" : "Não"));
+            break;
         }
-
-        System.out.println("\n========== BUILD ENCONTRADA ==========");
-        System.out.println("ID: " + build.getId());
-        System.out.println("Nome: " + build.getNome());
-        System.out.println("Usuário ID: " + build.getUsuarioId());
-
-        System.out.println("Processador: " +
-                build.getProcessador().getNome());
-
-        System.out.println("Placa-Mãe: " +
-                build.getPlacaMae().getNome());
-
-        System.out.println("Placa de Vídeo: " +
-                build.getPlacaVideo().getNome());
-
-        System.out.println("Memória: " +
-                build.getMemoria().getNome());
-
-        System.out.println("SSD: " +
-                build.getSsd().getNome());
-
-        System.out.println("Fonte: " +
-                build.getFonte().getNome());
-
-        System.out.println("Favorita: " +
-                (build.isFavorita() ? "Sim" : "Não"));
     }
 
     public static void atualizarBuild() {
@@ -1039,27 +1100,26 @@ public class Main {
 
         System.out.println("\n========== TESTAR COMPATIBILIDADE ==========");
 
-        int id = lerInteiro("Digite o ID da Build: ");
+        while (true) {
+            int id = lerInteiro("Digite o ID da Build: ");
 
-        Build build = buildDAO.buscarPorId(id);
+            Build build = buildDAO.buscarPorId(id);
 
-        if (build == null) {
-            System.out.println("\nBuild não encontrada!");
-            return;
-        }
+            if (build == null) {
+                System.out.println("Build não encontrada!\n");
+                continue;
+            }
 
-        boolean compativel = compatibilidadeService.verificarBuild(build);
+            boolean compativel = compatibilidadeService.verificarBuild(build);
 
-        System.out.println("\nResultado da análise:");
+            System.out.println("\nResultado da análise:");
 
-        if (compativel) {
-
-            System.out.println("A build é compatível!");
-
-        } else {
-
-            System.out.println("A build possui incompatibilidades!");
-
+            if (compativel) {
+                System.out.println("A build é compatível!");
+            } else {
+                System.out.println("A build possui incompatibilidades!");
+            }
+            break;
         }
     }
 
@@ -1067,93 +1127,85 @@ public class Main {
 
         System.out.println("\n========== CALCULAR CONSUMO ==========");
 
-        int id = lerInteiro("Escolha o ID da build: ");
+        while (true) {
+            int id = lerInteiro("Escolha o ID da build: ");
 
-        Build build = buildDAO.buscarPorId(id);
+            Build build = buildDAO.buscarPorId(id);
 
-        if (build == null) {
-            System.out.println("\nBuild não encontrada!");
-            return;
+            if (build == null) {
+                System.out.println("Build não encontrada!\n");
+                continue;
+            }
+
+            int consumo = consumoService.calcularConsumo(build);
+
+            int recomendado = consumoService.consumoRecomendado(build);
+
+            boolean suporta = consumoService.fonteSuporta(build);
+
+            System.out.println("\n========== RESULTADO ==========");
+
+            System.out.println("Build: " + build.getNome());
+
+            System.out.println("Consumo estimado: "
+                    + consumo + "W");
+
+            System.out.println("Fonte recomendada: "
+                    + recomendado + "W");
+
+            if (suporta) {
+                System.out.println("A fonte suporta essa configuração!");
+            } else {
+                System.out.println("A fonte não suporta essa configuração!");
+            }
+            break;
         }
-
-        int consumo = consumoService.calcularConsumo(build);
-
-        int recomendado = consumoService.consumoRecomendado(build);
-
-        boolean suporta = consumoService.fonteSuporta(build);
-
-
-        System.out.println("\n========== RESULTADO ==========");
-
-        System.out.println("Build: " + build.getNome());
-
-        System.out.println("Consumo estimado: "
-                + consumo + "W");
-
-        System.out.println("Fonte recomendada: "
-                + recomendado + "W");
-
-
-        if (suporta) {
-
-            System.out.println("A fonte suporta essa configuração!");
-
-        } else {
-
-            System.out.println("A fonte não suporta essa configuração!");
-
-        }
-
     }
 
     public static void calcularFPS() {
 
         System.out.println("\n========== CALCULAR FPS ==========");
 
-        int id = lerInteiro("Escolha o ID da build: ");
+        while (true) {
+            int id = lerInteiro("Escolha o ID da build: ");
 
-        Build build = buildDAO.buscarPorId(id);
+            Build build = buildDAO.buscarPorId(id);
 
-        if (build == null) {
-            System.out.println("\nBuild não encontrada!");
-            return;
+            if (build == null) {
+                System.out.println("\nBuild não encontrada!");
+                continue;
+            }
+
+            while (true) {
+                System.out.println("\nJOGOS DISPONÍVEIS NO BANCO:");
+                for (Jogo jogoCadastrado : jogoDAO.listar()) {
+                    System.out.println(jogoCadastrado);
+                }
+
+                int idJogo = lerInteiro("Escolha o ID do jogo: ");
+                Jogo jogo = jogoDAO.buscarPorId(idJogo);
+
+                if (jogo == null) {
+                    System.out.println("Jogo não encontrado! Digite um ID de jogo válido.");
+                    continue;
+                }
+
+                int fps = fpsService.calcularFPS(build, jogo);
+
+                System.out.println("\n========== RESULTADO ==========");
+
+                System.out.println("Build: " + build.getNome());
+
+                System.out.println("Jogo: " + jogo.getNome());
+                System.out.println("FPS estimado: " + fps);
+
+                if (fps >= 60) {
+                    System.out.println("✅ Desempenho recomendado!");
+                } else {
+                    System.out.println("⚠️ Desempenho abaixo do ideal.");
+                }
+                return;
+            }
         }
-
-
-        Jogo jogo = new Jogo();
-
-        System.out.print("Nome do jogo: ");
-        jogo.setNome(sc.nextLine());
-
-        System.out.print("Exigência do processador (CPU): ");
-        jogo.setExigenciaCpu(sc.nextInt());
-
-        System.out.print("Exigência da placa de vídeo (GPU): ");
-        jogo.setExigenciaGpu(sc.nextInt());
-        sc.nextLine();
-
-
-        int fps = fpsService.calcularFPS(build, jogo);
-
-
-        System.out.println("\n========== RESULTADO ==========");
-
-        System.out.println("Build: " + build.getNome());
-
-        System.out.println("Jogo: " + jogo.getNome());
-
-        System.out.println("FPS estimado: " + fps);
-
-
-        if (fps >= 60) {
-
-            System.out.println("✅ Desempenho recomendado!");
-
-        } else {
-
-            System.out.println("⚠️ Desempenho abaixo do ideal.");
-
-        }
-
     }
 }

@@ -18,21 +18,26 @@ public class FPSService {
         double desempenhoCPU = build.getProcessador().getDesempenho();
         int desempenhoGPU = build.getPlacaVideo().getDesempenho();
 
-        int exigenciaCPU = jogo.getExigenciaCpu();
-        int exigenciaGPU = jogo.getExigenciaGpu();
+        int exigenciaCPU = Math.max(1, jogo.getExigenciaCpu());
+        int exigenciaGPU = Math.max(1, jogo.getExigenciaGpu());
 
-        double fatorCPU = (double) desempenhoCPU / exigenciaCPU;
-        double fatorGPU = (double) desempenhoGPU / exigenciaGPU;
+        double fatorCPU = desempenhoCPU / exigenciaCPU;
+        double fatorGPU = desempenhoGPU / (double) exigenciaGPU;
 
-        double fatorFinal = (fatorCPU + fatorGPU) / 2;
+        double cpuScore = Math.min(1.0, fatorCPU);
+        double gpuScore = Math.min(1.0, fatorGPU);
 
-        int fps = (int) (60 * fatorFinal);
+        double fatorFinal = 0.6 * cpuScore + 0.4 * Math.min(cpuScore, gpuScore);
 
-        if (fps < 15)
+        int fps = (int) Math.round(85 * Math.max(0.2, fatorFinal));
+
+        if (fps < 15) {
             fps = 15;
+        }
 
-        if (fps > 300)
+        if (fps > 300) {
             fps = 300;
+        }
 
         return fps;
     }
